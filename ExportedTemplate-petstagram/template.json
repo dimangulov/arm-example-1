@@ -1,0 +1,927 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vaults_petstagram_key_vault_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "searchServices_pssdikpmgaccount_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "databaseAccounts_petstagramdevdikpmgaccount_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "secrets_search_apikey_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "secrets_cosmosdb_apikey_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "alertrules_Failure_Anomalies___petstagramdevdi_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "serverfarms_petstagramdevdiplan_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "api_app_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "appServiceSecretsPermissions": {
+      "type": "array",
+      "defaultValue": [
+        "get"
+      ],
+      "metadata": {
+        "description": "Permissions to secrets in the vault. Valid values are: all, get, set, list, and delete."
+      }
+    },
+
+    "cosmosdb_database": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "cosmosdb_collection": {
+      "defaultValue": null,
+      "type": "String"
+    },
+
+    "servicebus_namespace_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "servicebus_RootManageSharedAccessKey_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "topics_newActivity_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "subscription_newActivity_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "azurefunctionapp_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "azurefunctionapp_serverfarm_name": {
+      "defaultValue": "[concat(parameters('azurefunctionapp_name'), 'ServerFarm')]",
+      "type": "String"
+    },
+    "secrets_servicebus_connectionstring_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+	
+	"storageAccounts_petstagramimages_name": {
+		"defaultValue": "petstagramimages",
+		"type": "String"
+	},
+	"secrets_petstagramimages_connectionstring_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+	
+	"topics_newImage_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+    "subscription_newImage_name": {
+      "defaultValue": null,
+      "type": "String"
+    },
+	
+	"cdnprofiles_petstagramimages_name": {
+		"defaultValue": "cdntodelete",
+		"type": "String"
+	},
+	"cdnendpoints_petstagramimages_name": {
+		"defaultValue": "cdntodelete",
+		"type": "String"
+	},
+	"origins_petstagramimages_blob_core_windows_net_name": {
+		"defaultValue": "petstagramimagestest-blob-core-windows-net",
+		"type": "String"
+	}
+  },
+  "variables": {
+    "ehVersion": "2017-04-01",
+    "servicebus_defaultAuthRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', parameters('servicebus_namespace_name'), parameters('servicebus_RootManageSharedAccessKey_name'))]",
+    "cosmosdb_resourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_petstagramdevdikpmgaccount_name'))]",
+	"search_resourceId": "[resourceId('Microsoft.Search/searchServices', parameters('searchServices_pssdikpmgaccount_name'))]",
+    "config_web_name": "web",
+    "storage_azurefunctionapp_name": "[concat(parameters('azurefunctionapp_name'), '')]",
+	"petstagramimages_resourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_petstagramimages_name'))]",
+	"storageVersionName": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
+	"petstagramCdnResourceId": "[resourceId('Microsoft.Cdn/profiles/endpoints', parameters('cdnprofiles_petstagramimages_name'), parameters('cdnendpoints_petstagramimages_name'))]"
+  },
+  "resources": [
+    {
+      "comments": "Generalized from resource: '/subscriptions/8be53b83-9fc0-466f-8faa-44121944a588/resourceGroups/petstagram/providers/Microsoft.DocumentDB/databaseAccounts/petstagramdevdikpmgaccount'.",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "kind": "GlobalDocumentDB",
+      "name": "[parameters('databaseAccounts_petstagramdevdikpmgaccount_name')]",
+      "apiVersion": "2015-04-08",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "defaultExperience": "Gremlin (graph)"
+      },
+      "scale": null,
+      "properties": {
+        "ipRangeFilter": "",
+        "enableAutomaticFailover": false,
+        "enableMultipleWriteLocations": false,
+        "isVirtualNetworkFilterEnabled": false,
+        "virtualNetworkRules": [],
+        "databaseAccountOfferType": "Standard",
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session",
+          "maxIntervalInSeconds": 5,
+          "maxStalenessPrefix": 100
+        },
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]",
+            "provisioningState": "Succeeded",
+            "failoverPriority": 0
+          }
+        ],
+        "capabilities": [
+          {
+            "name": "EnableGremlin"
+          }
+        ]
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/8be53b83-9fc0-466f-8faa-44121944a588/resourceGroups/petstagram/providers/Microsoft.KeyVault/vaults/petstagram-key-vault'.",
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[parameters('vaults_petstagram_key_vault_name')]",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "Standard"
+        },
+        "tenantId": "[subscription().tenantId]",
+        "accessPolicies": [
+        ],
+        "enabledForDeployment": false,
+        "enabledForDiskEncryption": false,
+        "enabledForTemplateDeployment": true
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/8be53b83-9fc0-466f-8faa-44121944a588/resourceGroups/petstagram/providers/Microsoft.Search/searchServices/pssdikpmgaccount'.",
+      "type": "Microsoft.Search/searchServices",
+      "sku": {
+        "name": "basic"
+      },
+      "name": "[parameters('searchServices_pssdikpmgaccount_name')]",
+      "apiVersion": "2015-08-19",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "replicaCount": 1,
+        "partitionCount": 1,
+        "hostingMode": "Default"
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/8be53b83-9fc0-466f-8faa-44121944a588/resourceGroups/petstagram/providers/Microsoft.KeyVault/vaults/petstagram-key-vault/secrets/cosmosdb-apikey'.",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(parameters('vaults_petstagram_key_vault_name'), '/', parameters('secrets_servicebus_connectionstring_name'))]",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "value": "[listkeys(variables('servicebus_defaultAuthRuleResourceId'), variables('ehVersion')).primaryConnectionString]",
+        "attributes": {
+          "enabled": true
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_petstagram_key_vault_name'))]",
+        "[variables('servicebus_defaultAuthRuleResourceId')]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/8be53b83-9fc0-466f-8faa-44121944a588/resourceGroups/petstagram/providers/Microsoft.KeyVault/vaults/petstagram-key-vault/secrets/cosmosdb-apikey'.",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(parameters('vaults_petstagram_key_vault_name'), '/', parameters('secrets_cosmosdb_apikey_name'))]",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "value": "[listKeys(variables('cosmosdb_resourceId'), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]",
+        "attributes": {
+          "enabled": true
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_petstagram_key_vault_name'))]",
+		"[variables('cosmosdb_resourceId')]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/8be53b83-9fc0-466f-8faa-44121944a588/resourceGroups/petstagram/providers/Microsoft.KeyVault/vaults/petstagram-key-vault/secrets/search-apikey'.",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(parameters('vaults_petstagram_key_vault_name'), '/', parameters('secrets_search_apikey_name'))]",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "value": "[listAdminKeys(variables('search_resourceId'), '2015-08-19').PrimaryKey]",
+        "attributes": {
+          "enabled": true
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_petstagram_key_vault_name'))]",
+		"[variables('search_resourceId')]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/microsoft.insights/components/petstagramdevdi'.",
+      "type": "microsoft.insights/components",
+      "kind": "web",
+      "name": "[parameters('api_app_name')]",
+      "apiVersion": "2015-05-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "Application_Type": "web",
+        "Flow_Type": null,
+        "Request_Source": "IbizaWebAppExtensionCreate",
+        "HockeyAppId": null,
+        "SamplingPercentage": null
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Web/serverfarms/petstagramdevdiplan'.",
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "S1",
+        "tier": "Standard",
+        "size": "S1",
+        "family": "S",
+        "capacity": 1
+      },
+      "kind": "app",
+      "name": "[parameters('serverfarms_petstagramdevdiplan_name')]",
+      "apiVersion": "2016-09-01",
+      "location": "[resourceGroup().location]",
+      "scale": null,
+      "properties": {
+        "name": "[parameters('serverfarms_petstagramdevdiplan_name')]",
+        "workerTierName": null,
+        "adminSiteName": null,
+        "hostingEnvironmentProfile": null,
+        "perSiteScaling": false,
+        "reserved": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      },
+      "dependsOn": []
+    },
+    {
+      "name": "[parameters('api_app_name')]",
+      "type": "Microsoft.Web/sites",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(concat('microsoft.insights/components/', parameters('api_app_name')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "default"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "~2"
+            }
+          ]
+        },
+        "name": "[parameters('api_app_name')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_petstagramdevdiplan_name'))]",
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[concat('microsoft.insights/components/', parameters('api_app_name'))]",
+        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_petstagramdevdiplan_name'))]"
+      ],
+      "apiVersion": "2016-03-01",
+      "location": "[resourceGroup().location]"
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/accessPolicies",
+      "name": "[concat(parameters('vaults_petstagram_key_vault_name'), '/add')]",
+      "apiVersion": "2018-02-14",
+      "properties": {
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/', parameters('api_app_name')), '2018-11-01', 'Full').identity.principalId]",
+            "permissions": {
+              "secrets": "[parameters('appServiceSecretsPermissions')]"
+            }
+          },
+		  {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[reference(concat('Microsoft.Web/sites/', parameters('azurefunctionapp_name')), '2018-11-01', 'Full').identity.principalId]",
+            "permissions": {
+              "secrets": "[parameters('appServiceSecretsPermissions')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.ServiceBus/namespaces/testdi2'.",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      },
+      "name": "[parameters('servicebus_namespace_name')]",
+      "apiVersion": "2017-04-01",
+      "location": "West Europe",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "provisioningState": "Succeeded",
+        "metricId": "[concat('14dc1fed-054a-46b0-a2e5-c66343ef5122:', parameters('servicebus_namespace_name'))]",
+        "createdAt": "2019-02-06T07:43:16.863Z",
+        "updatedAt": "2019-02-06T07:43:41.493Z",
+        "serviceBusEndpoint": "[concat('https://', parameters('servicebus_namespace_name'),'.servicebus.windows.net:443/')]",
+        "status": "Active"
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Storage/storageAccounts/kpmgpetstagramnewsfeedfu'.",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "Storage",
+      "name": "[variables('storage_azurefunctionapp_name')]",
+      "apiVersion": "2018-07-01",
+      "location": "West Europe",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": false,
+        "encryption": {
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        }
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Web/serverfarms/KPMGPetstagramNewsfeedFunction2019020609'.",
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+      },
+      "kind": "functionapp",
+      "name": "[parameters('azurefunctionapp_serverfarm_name')]",
+      "apiVersion": "2016-09-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "name": "[parameters('azurefunctionapp_serverfarm_name')]",
+        "workerTierName": null,
+        "adminSiteName": null,
+        "hostingEnvironmentProfile": null,
+        "perSiteScaling": false,
+        "reserved": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Web/sites/KPMGPetstagramNewsfeedFunction'.",
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp",
+      "name": "[parameters('azurefunctionapp_name')]",
+      "apiVersion": "2016-08-01",
+      "location": "West Europe",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "tags": {
+      },
+      "scale": null,
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('azurefunctionapp_serverfarm_name'))]",
+        "reserved": false,
+        "siteConfig": null,
+        "scmSiteAlsoStopped": false,
+        "hostingEnvironmentProfile": null,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 1536,
+        "dailyMemoryTimeQuota": 0,
+        "cloningInfo": null,
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('azurefunctionapp_serverfarm_name'))]",
+        "[variables('servicebus_defaultAuthRuleResourceId')]",
+		"[variables('cosmosdb_resourceId')]",
+		"[variables('petstagramCdnResourceId')]"
+      ],
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('azurefunctionapp_name'))]"
+          ],
+          "tags": {
+            "displayName": "AutomaticalyCreatedProperties"
+          },
+          "properties": {
+            "ServiceBus_ConnectionString": "[listkeys(variables('servicebus_defaultAuthRuleResourceId'), variables('ehVersion')).primaryConnectionString]",
+            "ServiceBus_newActivityTopicName": "[parameters('topics_newActivity_name')]",
+            "ServiceBus_newActivitySubscriptionName": "[parameters('subscription_newActivity_name')]",
+            "CosmosDb_DocumentDb": "[concat('https://',parameters('databaseAccounts_petstagramdevdikpmgaccount_name'),'.documents.azure.com:443/')]",
+            "CosmosDb_GraphHost": "[concat(parameters('databaseAccounts_petstagramdevdikpmgaccount_name'),'.gremlin.cosmosdb.azure.com')]",
+            "CosmosDb_Database": "[parameters('cosmosdb_database')]",
+            "CosmosDb_GraphPort": "443",
+            "CosmosDb_Collection": "[parameters('cosmosdb_collection')]",
+            "CosmosDb_ApiKey_SecretName": "[parameters('secrets_cosmosdb_apikey_name')]",
+            "KeyVault_Name": "[parameters('vaults_petstagram_key_vault_name')]",
+            "Storage_Images_ConnectionStringSecretName": "[parameters('secrets_petstagramimages_connectionstring_name')]",
+			
+			"ServiceBus_newImageTopicName": "[parameters('topics_newImage_name')]",
+            "ServiceBus_newImageSubscriptionName": "[parameters('subscription_newImage_name')]",
+			
+            "Storage_Images_CdnUri": "[reference(variables('petstagramCdnResourceId')).hostName]"
+          }
+        }
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourcegroups/petstagram/providers/Microsoft.ServiceBus/namespaces/testdi2/AuthorizationRules/RootManageSharedAccessKey'.",
+      "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
+      "name": "[concat(parameters('servicebus_namespace_name'), '/', parameters('servicebus_RootManageSharedAccessKey_name'))]",
+      "apiVersion": "2017-04-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "rights": [
+          "Listen",
+          "Manage",
+          "Send"
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('servicebus_namespace_name'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourcegroups/petstagram/providers/Microsoft.ServiceBus/namespaces/testdi2/topics/activitylist'.",
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "name": "[concat(parameters('servicebus_namespace_name'), '/', parameters('topics_newActivity_name'))]",
+      "apiVersion": "2017-04-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "defaultMessageTimeToLive": "P14D",
+        "maxSizeInMegabytes": 5120,
+        "requiresDuplicateDetection": false,
+        "duplicateDetectionHistoryTimeWindow": "PT10M",
+        "enableBatchedOperations": true,
+        "status": "Active",
+        "supportOrdering": false,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+        "$Default": null,
+        "enablePartitioning": true,
+        "enableExpress": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('servicebus_namespace_name'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourcegroups/petstagram/providers/Microsoft.ServiceBus/namespaces/testdi2/topics/activitylist/subscriptions/newsfeedGeneration'.",
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "name": "[concat(parameters('servicebus_namespace_name'), '/', parameters('topics_newActivity_name'), '/', parameters('subscription_newActivity_name'))]",
+      "apiVersion": "2017-04-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "lockDuration": "PT30S",
+        "requiresSession": false,
+        "defaultMessageTimeToLive": "P14D",
+        "deadLetteringOnMessageExpiration": true,
+        "deadLetteringOnFilterEvaluationExceptions": true,
+        "maxDeliveryCount": 10,
+        "status": "Active",
+        "enableBatchedOperations": false,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('servicebus_namespace_name'))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('servicebus_namespace_name'), parameters('topics_newActivity_name'))]"
+      ]
+    },
+	{
+      "comments": "",
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "name": "[concat(parameters('servicebus_namespace_name'), '/', parameters('topics_newImage_name'))]",
+      "apiVersion": "2017-04-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "defaultMessageTimeToLive": "P14D",
+        "maxSizeInMegabytes": 5120,
+        "requiresDuplicateDetection": false,
+        "duplicateDetectionHistoryTimeWindow": "PT10M",
+        "enableBatchedOperations": true,
+        "status": "Active",
+        "supportOrdering": false,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+        "$Default": null,
+        "enablePartitioning": true,
+        "enableExpress": false
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('servicebus_namespace_name'))]"
+      ]
+    },
+	{
+      "comments": "",
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+      "name": "[concat(parameters('servicebus_namespace_name'), '/', parameters('topics_newImage_name'), '/', parameters('subscription_newImage_name'))]",
+      "apiVersion": "2017-04-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "lockDuration": "PT30S",
+        "requiresSession": false,
+        "defaultMessageTimeToLive": "P14D",
+        "deadLetteringOnMessageExpiration": true,
+        "deadLetteringOnFilterEvaluationExceptions": true,
+        "maxDeliveryCount": 10,
+        "status": "Active",
+        "enableBatchedOperations": false,
+        "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('servicebus_namespace_name'))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('servicebus_namespace_name'), parameters('topics_newImage_name'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Web/sites/KPMGPetstagramNewsfeedFunction/config/web'.",
+      "type": "Microsoft.Web/sites/config",
+      "name": "[concat(parameters('azurefunctionapp_name'), '/', variables('config_web_name'))]",
+      "apiVersion": "2016-08-01",
+      "location": "West Europe",
+      "tags": {
+      },
+      "scale": null,
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "Default.htm",
+          "Default.html",
+          "Default.asp",
+          "index.htm",
+          "index.html",
+          "iisstart.htm",
+          "default.aspx",
+          "index.php"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "linuxFxVersion": "",
+        "windowsFxVersion": null,
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": "VS2017",
+        "httpLoggingEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": false,
+        "publishingUsername": "$KPMGPetstagramNewsfeedFunction",
+        "publishingPassword": null,
+        "appSettings": null,
+        "azureStorageAccounts": {},
+        "metadata": null,
+        "connectionStrings": null,
+        "machineKey": null,
+        "handlerMappings": null,
+        "documentRoot": null,
+        "scmType": "None",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "javaVersion": null,
+        "javaContainer": null,
+        "javaContainerVersion": null,
+        "appCommandLine": "",
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "winAuthAdminState": 0,
+        "winAuthTenantState": 0,
+        "customAppPoolIdentityAdminState": false,
+        "customAppPoolIdentityTenantState": false,
+        "runtimeADUser": null,
+        "runtimeADUserPassword": null,
+        "loadBalancing": "LeastRequests",
+        "routingRules": [],
+        "experiments": {
+          "rampUpRules": []
+        },
+        "limits": null,
+        "autoHealEnabled": false,
+        "autoHealRules": null,
+        "tracingOptions": null,
+        "vnetName": "",
+        "siteAuthEnabled": false,
+        "siteAuthSettings": {
+          "enabled": null,
+          "unauthenticatedClientAction": null,
+          "tokenStoreEnabled": null,
+          "allowedExternalRedirectUrls": null,
+          "defaultProvider": null,
+          "clientId": null,
+          "clientSecret": null,
+          "clientSecretCertificateThumbprint": null,
+          "issuer": null,
+          "allowedAudiences": null,
+          "additionalLoginParams": null,
+          "isAadAutoProvisioned": false,
+          "googleClientId": null,
+          "googleClientSecret": null,
+          "googleOAuthScopes": null,
+          "facebookAppId": null,
+          "facebookAppSecret": null,
+          "facebookOAuthScopes": null,
+          "twitterConsumerKey": null,
+          "twitterConsumerSecret": null,
+          "microsoftAccountClientId": null,
+          "microsoftAccountClientSecret": null,
+          "microsoftAccountOAuthScopes": null
+        },
+        "cors": {
+          "allowedOrigins": [
+            "https://functions.azure.com",
+            "https://functions-staging.azure.com",
+            "https://functions-next.azure.com"
+          ],
+          "supportCredentials": false
+        },
+        "push": null,
+        "apiDefinition": null,
+        "autoSwapSlotName": null,
+        "localMySqlEnabled": false,
+        "managedServiceIdentityId": 882,
+        "xManagedServiceIdentityId": null,
+        "ipSecurityRestrictions": null,
+        "scmIpSecurityRestrictions": null,
+        "scmIpSecurityRestrictionsUseMain": null,
+        "http20Enabled": false,
+        "minTlsVersion": "1.2",
+        "ftpsState": "AllAllowed",
+        "reservedInstanceCount": 0
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('azurefunctionapp_name'))]"
+      ]
+    },
+    {
+      "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Web/sites/KPMGPetstagramNewsfeedFunction/hostNameBindings/kpmgpetstagramnewsfeedfunction.azurewebsites.net'.",
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "name": "[concat(parameters('azurefunctionapp_name'), '/', concat(parameters('azurefunctionapp_name'),'.azurewebsites.net'))]",
+      "apiVersion": "2016-08-01",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "siteName": "[parameters('azurefunctionapp_name')]",
+        "domainId": null,
+        "hostNameType": "Verified"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('azurefunctionapp_name'))]"
+      ]
+    },
+	{
+            "comments": "Generalized from resource: '/subscriptions/14dc1fed-054a-46b0-a2e5-c66343ef5122/resourceGroups/petstagram/providers/Microsoft.Storage/storageAccounts/petstagramimages'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "name": "[parameters('storageAccounts_petstagramimages_name')]",
+            "apiVersion": "2018-07-01",
+            "location": "westeurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            },
+            "dependsOn": []
+        },
+		{
+		  "comments": "",
+		  "type": "Microsoft.KeyVault/vaults/secrets",
+		  "name": "[concat(parameters('vaults_petstagram_key_vault_name'), '/', parameters('secrets_petstagramimages_connectionstring_name'))]",
+		  "apiVersion": "2016-10-01",
+		  "location": "[resourceGroup().location]",
+		  "scale": null,
+		  "properties": {
+			"value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccounts_petstagramimages_name'),';AccountKey=',listKeys(variables('petstagramimages_resourceId'), variables('storageVersionName')).keys[0].value)]",
+			"attributes": {
+			  "enabled": true
+			}
+		  },
+		  "dependsOn": [
+			"[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_petstagram_key_vault_name'))]",
+			"[variables('petstagramimages_resourceId')]"
+		  ]
+		},
+		{
+            "comments": "Generalized from resource: '/subscriptions/d1d09bac-c318-43d4-9b3f-5182191c44a6/resourcegroups/Mobile-Apps/providers/Microsoft.Cdn/profiles/cdntodelete'.",
+            "type": "Microsoft.Cdn/profiles",
+            "sku": {
+                "name": "Standard_Microsoft"
+            },
+            "name": "[parameters('cdnprofiles_petstagramimages_name')]",
+            "apiVersion": "2016-04-02",
+            "location": "WestEurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceState": "Active"
+            },
+            "dependsOn": []
+        },
+		{
+            "comments": "Generalized from resource: '/subscriptions/d1d09bac-c318-43d4-9b3f-5182191c44a6/resourcegroups/Mobile-Apps/providers/Microsoft.Cdn/profiles/cdntodelete/endpoints/cdntodelete'.",
+            "type": "Microsoft.Cdn/profiles/endpoints",
+            "name": "[concat(parameters('cdnprofiles_petstagramimages_name'), '/', parameters('cdnendpoints_petstagramimages_name'))]",
+            "apiVersion": "2016-04-02",
+            "location": "WestEurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "originHostHeader": "[concat(parameters('storageAccounts_petstagramimages_name'), '.blob.core.windows.net')]",
+                "isHttpAllowed": true,
+                "isHttpsAllowed": true,
+                "queryStringCachingBehavior": "IgnoreQueryString",
+                "originPath": null,
+                "origins": [
+                    {
+                        "name": "[concat(parameters('storageAccounts_petstagramimages_name'), '-blob-core-windows-net')]",
+                        "properties": {
+                            "hostName": "[concat(parameters('storageAccounts_petstagramimages_name'), '.blob.core.windows.net')]",
+                            "httpPort": 80,
+                            "httpsPort": 443
+                        }
+                    }
+                ],
+                "contentTypesToCompress": [
+                    "application/eot",
+                    "application/font",
+                    "application/font-sfnt",
+                    "application/javascript",
+                    "application/json",
+                    "application/opentype",
+                    "application/otf",
+                    "application/pkcs7-mime",
+                    "application/truetype",
+                    "application/ttf",
+                    "application/vnd.ms-fontobject",
+                    "application/xhtml+xml",
+                    "application/xml",
+                    "application/xml+rss",
+                    "application/x-font-opentype",
+                    "application/x-font-truetype",
+                    "application/x-font-ttf",
+                    "application/x-httpd-cgi",
+                    "application/x-javascript",
+                    "application/x-mpegurl",
+                    "application/x-opentype",
+                    "application/x-otf",
+                    "application/x-perl",
+                    "application/x-ttf",
+                    "font/eot",
+                    "font/ttf",
+                    "font/otf",
+                    "font/opentype",
+                    "image/svg+xml",
+                    "text/css",
+                    "text/csv",
+                    "text/html",
+                    "text/javascript",
+                    "text/js",
+                    "text/plain",
+                    "text/richtext",
+                    "text/tab-separated-values",
+                    "text/xml",
+                    "text/x-script",
+                    "text/x-component",
+                    "text/x-java-source"
+                ],
+                "isCompressionEnabled": true
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('cdnprofiles_petstagramimages_name'))]"
+            ]
+        },
+		{
+            "comments": "Generalized from resource: '/subscriptions/d1d09bac-c318-43d4-9b3f-5182191c44a6/resourcegroups/Mobile-Apps/providers/Microsoft.Cdn/profiles/cdntodelete/endpoints/cdntodelete/origins/petstagramimagestest-blob-core-windows-net'.",
+            "type": "Microsoft.Cdn/profiles/endpoints/origins",
+            "name": "[concat(parameters('cdnprofiles_petstagramimages_name'), '/', parameters('cdnendpoints_petstagramimages_name'), '/', parameters('origins_petstagramimages_blob_core_windows_net_name'))]",
+            "apiVersion": "2016-04-02",
+            "scale": null,
+            "properties": {
+                "hostName": "[concat(parameters('storageAccounts_petstagramimages_name'), '.blob.core.windows.net')]",
+                "httpPort": 80,
+                "httpsPort": 443
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('cdnprofiles_petstagramimages_name'))]",
+                "[resourceId('Microsoft.Cdn/profiles/endpoints', parameters('cdnprofiles_petstagramimages_name'), parameters('cdnendpoints_petstagramimages_name'))]"
+            ]
+        }
+  ]
+}

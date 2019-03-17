@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vaults_petstagram_key_vault_name": {
+      "value": "petstagramkeyvaulttest"
+    },
+    "searchServices_pssdikpmgaccount_name": {
+      "value": "pss"
+    },
+    "databaseAccounts_petstagramdevdikpmgaccount_name": {
+      "value": "petstagram"
+    },
+    "secrets_search_apikey_name": {
+      "value": "searchapikeytest"
+    },
+    "secrets_cosmosdb_apikey_name": {
+      "value": "cosmosdbapikeytest"
+    },
+    "alertrules_Failure_Anomalies___petstagramdevdi_name": {
+      "value": "Failure_Anomalies___petstagramtest"
+    },
+    "serverfarms_petstagramdevdiplan_name": {
+      "value": "petstagram"
+    },
+    "api_app_name": {
+      "value": "petstagramtest"
+    },
+
+    "cosmosdb_database": {
+      "value": "db_main"
+    },
+    "cosmosdb_collection": {
+      "value": "test"
+    },
+
+    "servicebus_namespace_name": {
+      "value": "petstagram"
+    },
+    "servicebus_RootManageSharedAccessKey_name": {
+      "value": "RootManageSharedAccessKey"
+    },
+    "topics_newActivity_name": {
+      "value": "newActivityTest"
+    },
+    "subscription_newActivity_name": {
+      "value": "newActivityTest"
+    },
+    "azurefunctionapp_name": {
+      "value": "petstagramfunctionstest"
+    },
+    "azurefunctionapp_serverfarm_name": {
+      "value": "petstagramfunctionsfarm"
+    },
+    "secrets_servicebus_connectionstring_name": {
+      "value": "servicebusconnectionstring"
+    },
+	
+	"storageAccounts_petstagramimages_name": {
+		"value": "petstagramimagestest"
+	},
+	"secrets_petstagramimages_connectionstring_name": {
+      "value": "petstagramimagescstest"
+    },
+	
+	"topics_newImage_name": {
+      "value": "newImageTest"
+    },
+    "subscription_newImage_name": {
+      "value": "newImageTest"
+    },
+	
+	"cdnprofiles_petstagramimages_name": {
+		"value": "petstagramimagestest"
+	},
+	"cdnendpoints_petstagramimages_name": {
+		"value": "petstagramimagestest"
+	},
+	"origins_petstagramimages_blob_core_windows_net_name": {
+		"value": "petstagramimagestest-blob-core-windows-net"
+	}
+  }
+}

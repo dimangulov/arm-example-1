@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vaults_petstagram_key_vault_name": {
+      "value": "petstagramkeyvault"
+    },
+    "searchServices_pssdikpmgaccount_name": {
+      "value": "pss"
+    },
+    "databaseAccounts_petstagramdevdikpmgaccount_name": {
+      "value": "petstagram"
+    },
+    "secrets_search_apikey_name": {
+      "value": "searchapikey"
+    },
+    "secrets_cosmosdb_apikey_name": {
+      "value": "cosmosdbapikey"
+    },
+    "alertrules_Failure_Anomalies___petstagramdevdi_name": {
+      "value": "Failure_Anomalies___petstagrammain"
+    },
+    "serverfarms_petstagramdevdiplan_name": {
+      "value": "petstagram"
+    },
+    "api_app_name": {
+      "value": "petstagram"
+    },
+
+    "cosmosdb_database": {
+      "value": "db_main"
+    },
+    "cosmosdb_collection": {
+      "value": "main"
+    },
+
+    "servicebus_namespace_name": {
+      "value": "petstagram"
+    },
+    "servicebus_RootManageSharedAccessKey_name": {
+      "value": "RootManageSharedAccessKey"
+    },
+    "topics_newActivity_name": {
+      "value": "newActivity"
+    },
+    "subscription_newActivity_name": {
+      "value": "newActivity"
+    },
+    "azurefunctionapp_name": {
+      "value": "petstagramfunctions"
+    },
+    "azurefunctionapp_serverfarm_name": {
+      "value": "petstagramfunctionsfarm"
+    },
+    "secrets_servicebus_connectionstring_name": {
+      "value": "servicebusconnectionstring"
+    },
+	
+	"storageAccounts_petstagramimages_name": {
+		"value": "petstagramimages"
+	},
+	"secrets_petstagramimages_connectionstring_name": {
+      "value": "petstagramimagescs"
+    },
+	
+	"topics_newImage_name": {
+      "value": "newImage"
+    },
+    "subscription_newImage_name": {
+      "value": "newImage"
+    },
+	
+	"cdnprofiles_petstagramimages_name": {
+		"value": "petstagramimages"
+	},
+	"cdnendpoints_petstagramimages_name": {
+		"value": "petstagramimages"
+	},
+	"origins_petstagramimages_blob_core_windows_net_name": {
+		"value": "petstagramimages-blob-core-windows-net"
+	}
+  }
+}
